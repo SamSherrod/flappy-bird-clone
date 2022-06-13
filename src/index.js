@@ -1,39 +1,39 @@
 import Phaser from 'phaser';
-// import logoImg from './assets/logo.png';
 
-class MyGame extends Phaser.Scene
-{
-    constructor ()
-    {
-        super();
-    }
+import PlayScene from'./scenes/PlayScene';
+import MenuScene from'./scenes/MenuScene';
+import PreloadScene from'./scenes/PreloadScene';
+import ScoreScene from './scenes/ScoreScene';
+import PauseScene from './scenes/Pause Scene';
 
-    preload ()
-    {
-        this.load.image('logo', require('./assets/logo.png'));
-    }
-      
-    create ()
-    {
-        const logo = this.add.image(400, 150, 'logo');
-      
-        this.tweens.add({
-            targets: logo,
-            y: 450,
-            duration: 2000,
-            ease: "Power2",
-            yoyo: true,
-            loop: -1
-        });
-    }
+const WIDTH = 400;
+const HEIGHT = 600;
+const BIRD_POSITION = {x: WIDTH * 0.1, y: HEIGHT / 2};
+
+const SHARED_CONFIG = {
+    width: WIDTH,
+    height: HEIGHT,
+    startPosition: BIRD_POSITION
 }
 
-const config = {
-    type: Phaser.AUTO,
-    parent: 'phaser-example',
-    width: 800,
-    height: 600,
-    scene: MyGame
-};
+const Scenes = [PreloadScene, MenuScene, ScoreScene, PlayScene, PauseScene];
+const createScene = Scene => new Scene(SHARED_CONFIG)
+const initScenes = () => Scenes.map(createScene)
 
-const game = new Phaser.Game(config);
+const config = {
+    // WebGL (Web graphics Library) JS Api for rendering 2D and 3D graphics
+    type: Phaser.AUTO,
+    ...SHARED_CONFIG,
+    pixelArt: true,
+    physics: {
+        // Arcade physics plugin, manages physics simulation
+        default: 'arcade',
+        arcade: {
+            // gravity: {y: 400}, // applies gravity to all objects in scene
+            debug: true // uncomment to turn debug mode on for all physics objects in scene
+        }
+    },
+    scene: initScenes()
+}
+
+new Phaser.Game(config)
